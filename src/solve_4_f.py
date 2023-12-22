@@ -6,13 +6,16 @@ from sklearn.preprocessing import MinMaxScaler
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from sklearn.linear_model import LogisticRegression
-from sklearn.metrics import accuracy_score
 from utils import classifier_evaluation_plot
+import warnings
+
+# ignore FutureWarnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 data = pd.read_csv('data/4_preprocessed.csv')
 X = data.drop(['Unnamed: 0', 'type'], axis=1)
 y = data['type']
-seed = 42
+seed = 0
 
 # -----------------
 # Normalise features
@@ -44,9 +47,9 @@ model.fit(X_train, y_train)
 
 # Make predictions and evaluate the model
 y_pred = model.predict(X_test)
-filepath = 'plots/4f_all.png'
+filepath = 'plots/4f_default_lasso.png'
 classifier_evaluation_plot(y_test, y_pred, model.classes_, filepath)
-print(f'Results saved in {filepath}')
+print(f'\nLogistic regression performance on test set saved in {filepath}\n')
 
 # -------------------
 # Feature importances
@@ -59,10 +62,17 @@ importances= pd.DataFrame({
 })
 # sort features by importance
 importances = importances.sort_values(by="Importance", ascending=False)
+print('Four most important features:')
+print(importances.set_index('Feature').head(4))
 
-# plotting histogram of feature importances
+# find non-zero importances
+nonzero_importances = importances[importances['Importance'] > 0]
+print(f'\nOnly {len(nonzero_importances)} features out of {len(X.columns)} have non-zero importance\n')
+
+# plotting histogram of feature importances for the non-zero importances only
 fig, ax = plt.subplots(figsize=(6,6))
-sns.histplot(importances['Importance'], bins=70, ax=ax)
+sns.histplot(nonzero_importances['Importance'], bins=70, ax=ax)
+ax.set_yticks([2*i for i in range(10)])
 ax.set_xlabel('Feature Importance')
 
 filepath = 'plots/4f_importance_hist.png'
@@ -70,7 +80,7 @@ fig.savefig(filepath)
 print(f'Feature importance histogram saved in {filepath}')
 
 # take 50 most important features
-important_features = importances['Feature'][:50]
+important_features = importances['Feature'][:4]
 assert (importances['Importance'][:50] > 0).all() # assert all have non-zero importances
 
 # Create logistic regression model with Lasso (L1) regularization
@@ -81,11 +91,7 @@ model.fit(X_train[important_features], y_train)
 
 # Make predictions and evaluate the model
 y_pred = model.predict(X_test[important_features])
-filepath = 'plots/4f_important.png'
+filepath = 'plots/4f_importance_lasso.png'
 classifier_evaluation_plot(y_test, y_pred, model.classes_, filepath)
-print(f'Results saved in {filepath}')
-
-# See which features are important now
-importances = np.abs(model.coef_[0]) + np.abs(model.coef_[1]) + np.abs(model.coef_[2])
-
-print(f"{(importances > 0).sum()} features were used out of {len(important_features)}")
+print('\nLogistic regression model trained on 4 most important features')
+print(f'Performance on test set saved in {filepath}')

@@ -24,7 +24,7 @@ Alternatively, clone the conda environment in `environment.yml`.
 
 The data required for the project is saved in `data/`.
 
-The solution to each question is in a script titled `solve_[question-number]_[parts].py`. For example, running `solve_3_abc.py` will yield the solutions to question 3 part a, b and c. Plots will be saved in the `plots/` directory and any processed data will be saved in `data/`. 
+The solution to each question is in a script titled `solve_[question-number]_[parts].py`. For example, running `solve_3_abc.py` will yield the solutions to question 3 part a, b and c. Plots will be saved in the `plots/` directory and any additional processed data will be saved in `data/`. Other results will be printed to the terminal.
 
 Below are the commands to generate all the results in the project. THE SCRIPTS MUST BE RUN IN THE ORDER GIVEN (certain scripts depend on pre-processed data from earlier scripts).
 

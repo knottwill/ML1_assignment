@@ -1,49 +1,72 @@
+"""
+Module containing functions necessary for the solving script
+"""
+
 import pandas as pd
 import matplotlib.pyplot as plt
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, ConfusionMatrixDisplay
-import numpy as np
-import pandas as pd
-from sklearn.ensemble import RandomForestRegressor, RandomForestClassifier
+from sklearn.ensemble import RandomForestRegressor
 
 def random_forest_imputation(X, rf_params):
+    """
+    Random Forest Imputer
+
+    This function takes as input a dataset X containing missing values
+    then imputes them using random forest regression. When training to
+    predict a given feature, the missing values in the other features 
+    are temporarily imputed using the median value of that feature. 
+    Returns the imputed dataset. 
+    """
     X_imputed = X.copy()
     for col in X.columns:
         if X_imputed[col].isna().sum() > 0:
-            # Split data into sets with and without missing values
+            # split data into sets with and without missing values
             X_with_value = X_imputed[X_imputed[col].notna()]
             X_missing = X_imputed[X_imputed[col].isna()]
 
-            # Separate predictors and target
+            # separate predictors and target
             y_train = X_with_value[col]
             X_train = X_with_value.drop(col, axis=1)
             X_test = X_missing.drop(col, axis=1)
 
-            # Fill missing values in predictors with column median
+            # fill missing values in predictors with column median
             # (median over mean since most features are not normally distributed)
             X_train = X_train.fillna(X_train.median())
             X_test = X_test.fillna(X_train.median())
 
             model = RandomForestRegressor(**rf_params)
 
-            # Fit model and predict missing values
+            # fit model and predict missing values
             model.fit(X_train, y_train)
             X_imputed.loc[X_missing.index, col] = model.predict(X_test)
 
     return X_imputed
 
-# Function to convert classification report to DataFrame without accuracy row
 def parse_classification_report(report):
-    lines = report.split('\n')[2:-4]  # Exclude the last line (accuracy)
+    """
+    Takes as input a 'classification report' in the style provided
+    by sklearn.metrics.classification_report and parses the content
+    into a dataframe. 
+    """
+
+    lines = report.split('\n')[2:-4]  # exclude the last line (accuracy)
     data = [line.split() for line in lines if line]
     headers = ["Class", "Precision", "Recall", "F1-Score", "Support"]
     return pd.DataFrame(data, columns=headers)
 
 
 def classifier_evaluation_plot(y_true, y_pred, classes, filepath=None):
+    """
+    Function takes as input true labels, 'y_true', and predicted labels
+    'y_pred', and the unique labels in the correct order 'classes' for 
+    plotting, and returns a plot containing the following information:
+    - Confusion matrix comparing the true and predicted labels
+    - table showing the precision, recall, f1-score and support for each
+      class
+    """
 
     # calculate classification report, confusion matrix and accuracy
     class_report = classification_report(y_true, y_pred)
-    print("Classification Report\n", class_report)
     conf_matrix = confusion_matrix(y_true, y_pred)
     accuracy = accuracy_score(y_true, y_pred)
 

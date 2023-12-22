@@ -4,12 +4,9 @@ import seaborn as sns
 import matplotlib.pyplot as plt
 from sklearn.model_selection import train_test_split, GridSearchCV
 from sklearn.neighbors import KNeighborsClassifier
-from sklearn.metrics import accuracy_score
-from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
-from sklearn.metrics import accuracy_score, precision_score, recall_score, f1_score
+
+# custom plotting function (plots performance of a classifier)
 from utils import classifier_evaluation_plot
-import numpy as np
-import pandas as pd
 
 data = pd.read_csv('data/B_Relabelled.csv')
 X = data.drop(['Unnamed: 0', 'classification'], axis=1)
@@ -18,6 +15,7 @@ y = data['classification']
 
 # print label frequencies
 label_frequency = data['classification'].value_counts(dropna=False).reset_index()
+print('\nOriginal Label Frequencies:')
 print(label_frequency)
 
 # assert there are no missing features (only missing labels)
@@ -29,9 +27,9 @@ assert X.isnull().sum().sum() == 0
 
 def process_duplicates(duplicates):
     """
-    Take pair of duplicates and return the instance to keep
-    (If classification labels agree, keep instance with that label.
-    If classification labels disagree, keep instance with missing label.)
+    Take pair of duplicates and return the instance to keep.
+    If classification labels agree, we keep an instance with that label.
+    If classification labels disagree, keep instance with a missing label.
     """
 
     # asserting that there are exactly 2 duplicates
@@ -47,6 +45,10 @@ def process_duplicates(duplicates):
     return instance
 
 def inconsistent_labels(duplicates):
+    """
+    Take pair of duplicates, return boolean to indicate whether
+    the labels are the same or different. 
+    """
     return duplicates['classification'].nunique() > 1
 
 # find duplicates and group them together
@@ -70,6 +72,7 @@ data = pd.concat([data_deduplicated, processed_duplicates], ignore_index=True)
 assert np.count_nonzero( data.duplicated(subset=features, keep=False) ) == 0
 
 # print label frequencies after correcting duplicates
+print('Label Frequencies after handling duplicates:')
 print(data['classification'].value_counts(dropna=False).reset_index())
 
 # ---------------------
@@ -105,9 +108,9 @@ knn.fit(X_train, y_train)
 # evaluation k-NN classifier on test set
 y_pred = knn.predict(X_test)
 
-filepath = 'plots/2.png'
+filepath = 'plots/2_knn_results.png'
 classifier_evaluation_plot(y_test, y_pred, knn.classes_, filepath)
-print(f'Results saved in {filepath}')
+print(f'\nTest set performance of k-NN classifier saved in {filepath}\n')
 
 # ---------------------
 # Predicting missing labels
@@ -125,4 +128,5 @@ data_missing_labels.loc[:, 'classification'] = predicted_labels
 # combine the dataset with missing labels now filled and the dataset with existing labels
 processed_data = pd.concat([data_no_missing, data_missing_labels], ignore_index=True)
 
+print('Label frequencies after imputation of missing labels:')
 print(processed_data['classification'].value_counts(dropna=False).reset_index())

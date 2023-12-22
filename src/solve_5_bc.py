@@ -22,6 +22,7 @@ X = data.drop(['Unnamed: 0','type'], axis=1)
 y = data['type']
 seed = 42
 
+# load kmeans and spectral cluster labels from part (a)
 cluster_labels = pd.read_csv('data/cluster_labels.csv')
 kmeans_labels = cluster_labels["KMeans"]
 spectral_labels = cluster_labels["Spectral"]
@@ -108,7 +109,7 @@ plt.tight_layout()
 
 filepath = 'plots/5b_confusion.png'
 fig.savefig(filepath)
-print(f'Confusion matrices of classifiers saved in {filepath}')
+print(f'\nConfusion matrices of classifiers saved in {filepath}\n')
 
 # -------------------------
 # Calculating feature importances for 
@@ -192,7 +193,7 @@ plt.tight_layout()
 
 filepath = 'plots/5b_contingency.png'
 fig.savefig(filepath)
-print(f'Contingency tables of clusterings saved in {filepath}')
+print(f'Contingency tables of clusterings saved in {filepath}\n')
 
 # --------------------
 # Plotting PCA visualisation with points coloured by:
@@ -219,14 +220,14 @@ fig, axes = plt.subplots(3, 1, figsize=(8, 20))
 sns.scatterplot(x='Principal Component 1', y='Principal Component 2', data=pca_df, 
                 hue='KMeans labels', palette=['#ff7f0e', '#1f77b4'], ax=axes[0])
 
-# Same, coloured by most discriminant feature
+# same plot, coloured by most discriminant feature
 scatter_2 = sns.scatterplot(x='Principal Component 1', y='Principal Component 2', data=pca_df, 
                             hue='1st discriminant feature', palette='viridis', ax=axes[1])
 scatter_2.legend_.remove()
 cbar_2 = plt.colorbar(scatter_2.collections[0], ax=axes[1], orientation='vertical')
 cbar_2.set_label('Most Discriminant Feature', fontsize=10)
 
-# Same, coloured by second most discriminant feature
+# same plot, coloured by second most discriminant feature
 scatter_3 = sns.scatterplot(x='Principal Component 1', y='Principal Component 2', data=pca_df, 
                             hue='2nd discriminant feature', palette='viridis', ax=axes[2])
 scatter_3.legend_.remove()
@@ -241,4 +242,4 @@ for i, label in enumerate(['(i)', '(ii)', '(iii)']):
 
 filepath = 'plots/5c.png'
 fig.savefig(filepath)
-print(f'Figure saved in {filepath}')
+print(f'PCA visualisation saved in {filepath}')

@@ -5,7 +5,7 @@ from sklearn.decomposition import PCA
 import os
 import warnings
 
-# import FutureWarnings from sns.histplot
+# ignore FutureWarnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # make plots/ directory if it doesn't exist

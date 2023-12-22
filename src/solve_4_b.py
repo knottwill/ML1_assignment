@@ -1,11 +1,9 @@
 import numpy as np
 import pandas as pd
-import seaborn as sns
-import matplotlib.pyplot as plt
 import os
 from sklearn.utils import resample
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.impute import KNNImputer
+from sklearn.preprocessing import MinMaxScaler
+
 from utils import random_forest_imputation
 
 # make data/ directory if it doesn't exist
@@ -55,7 +53,7 @@ X = X.drop(columns=highly_sparse_features)
 # re-calculate sparsity
 sparsity = X.apply(calc_sparsity)
 
-print(f"{len(highly_sparse_features)} features had sparsity >= 95% and were removed from the dataset")
+print(f"{len(highly_sparse_features)} features had sparsity >= 95% and were removed from the dataset\n")
 print(f"#### Out of the remaining features: ####")
 print(f'++++ {round((sparsity >= 250/500).sum()*100/ len(sparsity),1)}% of features have sparsity >= 50%')
 
@@ -100,7 +98,7 @@ np.fill_diagonal(correlation_matrix.values, np.nan)
 max_corr = correlation_matrix.abs().max().max()
 
 if max_corr < 0.9:
-    print("++++ No features are highly correlated:")
+    print("++++ No features are highly correlated")
     print(f"++++ (Maximum absolute correlation between any two features: {max_corr: .3})\n")
 else:
     raise ValueError(f"Highly correlated features found")
@@ -123,16 +121,12 @@ def find_outliers(feature):
 
 outlier_vals = X.apply(find_outliers)
 
-print(f"{(outlier_vals).sum().sum()} outlier values imputed\n")
+X_outliers_removed = X[outlier_vals == False]
 
-X_na = X[outlier_vals == False]
-
-X_imputed = random_forest_imputation(X_na, {'random_state': seed})
-X_imputed = pd.DataFrame(X_imputed, columns = X_na.columns)
-
-# imputer = KNNImputer(n_neighbors=10, weights='distance')
-# X_imputed = imputer.fit_transform(X_na)
-# X_imputed = pd.DataFrame(X_imputed, columns = X_na.columns)
+print(f'Beginning imputation of {(outlier_vals).sum().sum()} outlier values...')
+X_imputed = random_forest_imputation(X_outliers_removed, {'random_state': seed})
+X_imputed = pd.DataFrame(X_imputed, columns = X_outliers_removed.columns)
+print('finished.\n')
 
 # -------------------
 # Resampling to make them uniform
@@ -159,4 +153,6 @@ oversampled_data = pd.concat([df_class_1, df_class_2_oversampled, df_class_3_ove
 oversampled_data = oversampled_data.sample(frac=1, random_state=seed).reset_index(drop=True)
 data = oversampled_data
 
-data.to_csv('data/4_preprocessed.csv', index=False)
+filepath = 'data/4_preprocessed.csv'
+data.to_csv(filepath, index=False)
+print(f'Pre-processed data saved in {filepath}')

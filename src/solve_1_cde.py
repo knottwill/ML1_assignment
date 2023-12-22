@@ -2,16 +2,15 @@ import pandas as pd
 import numpy as np
 import seaborn as sns
 import matplotlib.pyplot as plt
-import os
-import warnings
 from sklearn.cluster import KMeans
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.decomposition import PCA
-import pandas as pd
 from collections import Counter
+import os
+import warnings
 
-# import FutureWarnings from sns.histplot
+# ignore FutureWarnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # make plots/ directory if it doesn't exist
@@ -21,6 +20,10 @@ if not os.path.exists('plots/'):
 # load dataset A
 data = pd.read_csv('data/A_NoiseAdded.csv')
 X = data.drop(columns=['Unnamed: 0', 'classification'])
+
+# --------------------
+# Training two K-Means models on disjoint subsets of the data
+# --------------------
 
 # splitting the data into two equal training sets randomly
 train_set_1, train_set_2 = train_test_split(X, test_size=0.5, random_state=42)
@@ -40,8 +43,8 @@ combined_clusters_2 = np.concatenate([clusters_2_on_1, kmeans_2.labels_])
 # getting cluster counts for both models
 cluster_counts_1 = Counter(combined_clusters_1)
 cluster_counts_2 = Counter(combined_clusters_2)
-print("Cluster Sizes for kmeans_1:", cluster_counts_1)
-print("Cluster Sizes for kmeans_2:", cluster_counts_2)
+print("Cluster Sizes for k-means 1:", list(cluster_counts_1.values()))
+print("Cluster Sizes for k-means 2:", list(cluster_counts_2.values()))
 
 # creating and plotting the contingency table
 contingency_table = confusion_matrix(combined_clusters_1, combined_clusters_2)
@@ -51,9 +54,14 @@ plt.xlabel('Model 2 cluster labels')
 plt.ylabel('Model 1 cluster labels')
 filepath = 'plots/1c_contingency.png'
 plt.savefig(filepath)
-print(f"Contingency table saved in {filepath}")
+print(f"\nContingency table saved in {filepath}")
 
-# performing K-Means clustering with n_clusters=2 (BEFORE PCA)
+# ------------------
+# Performing K-Means with 2 clusters
+# before and after PCA
+# ------------------
+
+# performing K-Means clustering BEFORE PCA
 X_labels = KMeans(n_clusters=2, random_state=42).fit_predict(X)
 
 # applying PCA to reduce the data to 2 dimensions

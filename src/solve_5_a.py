@@ -2,8 +2,7 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-from sklearn.preprocessing import MinMaxScaler, StandardScaler
-from sklearn.impute import KNNImputer
+from sklearn.preprocessing import MinMaxScaler
 from sklearn.metrics import confusion_matrix, ConfusionMatrixDisplay
 from sklearn.cluster import KMeans, SpectralClustering
 from sklearn.metrics import silhouette_score
@@ -96,12 +95,12 @@ X = pd.DataFrame(X_norm, columns=X_imputed.columns)
 processed_data = pd.concat([data['Unnamed: 0'], X, y], axis=1)
 filepath = 'data/5_preprocessed.csv'
 processed_data.to_csv(filepath, index=False)
-print(f"Dataset preprocessed for clustering saved in {filepath}")
+print(f"Pre-processed dataset saved in {filepath}\n")
 
 ##############################
 
 ###  Selecting n_clusters  ###
-
+# (elbow and silhouette method)
 ##############################
 
 # calculating the inertia (within-clusters sum of squares) for the Elbow method
@@ -140,7 +139,7 @@ plt.tight_layout()
 # save figure
 filepath = 'plots/elbow_silhouette.png'
 fig.savefig(filepath)
-print(f'Elbow & Silhouette method plots saved in {filepath}')
+print(f'Elbow & Silhouette method plots saved in {filepath}\n')
 
 ########################################
 
@@ -166,24 +165,10 @@ ConfusionMatrixDisplay(conf_matrix).plot(cmap="Blues")
 plt.ylabel("KMeans Cluster Labels")
 plt.xlabel("Spectral Cluster Labels")
 
-# perform KMeans and Spectral clustering, each with two clusters
-n_clusters = 2
-km = KMeans(n_clusters=n_clusters, random_state=seed)
-kmeans_labels = km.fit_predict(X)
-
-spectral = SpectralClustering(n_clusters=n_clusters, affinity='nearest_neighbors', random_state=seed)
-spectral_labels = spectral.fit_predict(X)
-
-# contingency matrix
-conf_matrix = confusion_matrix(kmeans_labels, spectral_labels)
-ConfusionMatrixDisplay(conf_matrix).plot(cmap="Blues")
-plt.ylabel("KMeans Cluster Labels")
-plt.xlabel("Spectral Cluster Labels")
-
 # save contingency table
 filepath = 'plots/kmeans_spectral.png'
 plt.savefig(filepath)
-print(f'KMeans vs Spectral cluster contingency table saved in {filepath}')
+print(f'KMeans vs Spectral cluster contingency table saved in {filepath}\n')
 
 # save KMeans and Spectral labels
 cluster_labels = pd.DataFrame({
@@ -192,11 +177,16 @@ cluster_labels = pd.DataFrame({
 })
 filepath = 'data/cluster_labels.csv'
 cluster_labels.to_csv(filepath, index=False)
-print(f'Cluster labels saved in {filepath}')
+print(f'Cluster labels saved in {filepath}\n')
 
-# --------------------
-# Visualisation of KMeans vs Spectral clusters
-# ---------------------
+########################################
+
+###  2D visualisation of clusters  ###
+
+# below we obtain 2D representations of the 
+# dataset using PCA and UMAP, then colour the 
+# points according to the kmeans labels and spectral labels
+########################################
 
 # applying PCA to reduce the data to 2 dimensions
 pca = PCA(n_components=2)
@@ -237,8 +227,8 @@ sns.scatterplot(x='UMAP 1', y='UMAP 2', data=umap_df, hue='Spectral labels', pal
 # text labels
 axes[0].text(1.8, 2, '(a)', fontsize=20, color='black') 
 axes[1].text(1.8, 2, '(b)', fontsize=20, color='black') 
-axes[2].text(7.2, 8.8, '(d)', fontsize=20, color='black') 
-axes[3].text(7.2, 8.8, '(e)', fontsize=20, color='black') 
+axes[2].text(7.2, 8.8, '(c)', fontsize=20, color='black') 
+axes[3].text(7.2, 8.8, '(d)', fontsize=20, color='black') 
 
 for ax in axes:
     ax.grid(True)

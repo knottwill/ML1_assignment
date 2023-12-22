@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import os
 import warnings
 
-# import FutureWarnings from sns.histplot
+# ignore FutureWarnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # make ../plots/ directory if it doesn't exist
@@ -34,4 +34,4 @@ plt.tight_layout()
 
 filepath = 'plots/1a_distributions.png'
 fig.savefig(filepath)
-print(f'First 20 feature distributions saved in {filepath}')
+print(f'Density plot of first 20 features saved in {filepath}')

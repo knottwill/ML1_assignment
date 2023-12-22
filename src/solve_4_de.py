@@ -2,11 +2,15 @@ import numpy as np
 import pandas as pd
 import seaborn as sns
 import matplotlib.pyplot as plt
-import os
 from sklearn.model_selection import train_test_split
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.metrics import classification_report, confusion_matrix, accuracy_score, ConfusionMatrixDisplay
+from sklearn.metrics import accuracy_score
+import os
+import warnings
 from utils import classifier_evaluation_plot
+
+# ignore FutureWarnings
+warnings.simplefilter(action='ignore', category=FutureWarning)
 
 # make plots/ directory if it doesn't already exist
 if not os.path.exists('plots/'):
@@ -16,7 +20,7 @@ if not os.path.exists('plots/'):
 data = pd.read_csv('data/4_preprocessed.csv')
 X = data.drop(columns=['Unnamed: 0', 'type'])
 y = data['type']
-seed = 42
+seed = 0
 
 # splitting the data into training, validation and testing sets.
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=seed, stratify=y)
@@ -41,6 +45,7 @@ for n_estimators in n_estimators_values:
 
 # choose n_estimators with the highest accuracy on the validation set
 best_n_estimators = n_estimators_values[np.argmax(accuracy_scores)]
+print(f"Optimal number of trees: {best_n_estimators}")
 
 # combining training and validation sets (to be the full training set for the optimised classifier)
 X_train, y_train = pd.concat((X_train, X_validate)), pd.concat((y_train, y_validate))
@@ -55,9 +60,9 @@ rf.fit(X_train, y_train)
 
 y_pred = rf.predict(X_test)
 
-filepath = 'plots/4d.png'
+filepath = 'plots/4d_optimised_rf.png'
 classifier_evaluation_plot(y_test, y_pred, rf.classes_, filepath)
-print(f'Results saved in {filepath}')
+print(f'\nOptimised random forest performance on test set saved in {filepath}\n')
 
 # ---------------------
 # Feature importance
@@ -70,6 +75,8 @@ importances= pd.DataFrame({
 })
 # sort features by importance
 importances = importances.sort_values(by="Importance", ascending=False)
+print('Four most important features:')
+print(importances.set_index('Feature').head(4))
 
 # plotting histogram of feature importances
 fig, ax = plt.subplots(figsize=(6,6))
@@ -78,10 +85,10 @@ ax.set_xlabel('Feature Importance')
 
 filepath = 'plots/4e_importance_hist.png'
 fig.savefig(filepath)
-print(f'Feature importance histogram saved in {filepath}')
+print(f'\nFeature importance histogram saved in {filepath}\n')
 
-# selecting 50 most important features
-important_features = importances['Feature'][:50]
+# selecting 4 most important features
+important_features = importances['Feature'][:4]
 
 # subsetting the training and test data to include only these important features
 X_train_important = X_train[important_features]
@@ -98,7 +105,8 @@ rf_important.fit(X_train_important, y_train)
 # predicting on the test set with the important features
 y_pred_important = rf_important.predict(X_test_important)
 
-filepath = 'plots/4e_classification_results.png'
+filepath = 'plots/4e_importance_rf.png'
 classifier_evaluation_plot(y_test, y_pred_important, rf_important.classes_, filepath)
-print(f'Results saved in {filepath}')
+print('Random forest trained on subset of 50 most important features.')
+print(f'Performance on test set saved in {filepath}')
 
