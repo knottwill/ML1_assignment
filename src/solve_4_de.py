@@ -29,7 +29,7 @@ X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_
 X_train, X_validate, y_train, y_validate = train_test_split(X_train, y_train, test_size=0.2, random_state=seed, stratify=y_train)
 
 # refining a range of values for n_estimators
-n_estimators_values = np.array([10, 50, 100, 200, 500, 1000, 3000])
+n_estimators_values = np.array([10, 50, 100, 200, 500, 1000, 2000, 3000])
 
 # training and evaluating a model for each value of n_estimators
 accuracy_scores = []

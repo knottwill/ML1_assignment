@@ -15,15 +15,9 @@ data = pd.read_csv('data/ADS_baselineDataset.csv')
 X = data.drop(['Unnamed: 0', 'type'], axis=1)
 y = data['type']
 seed = 42
-# seed = 123
 
 # assert there are no missing values
 assert np.count_nonzero(data.isnull()) == 0
-
-# printing label frequency summary
-label_frequency = y.value_counts(dropna=False).reset_index()
-print("Frequency of labels:")
-print(label_frequency)
 
 # -----------------------------
 # Calculating sparsity of features
@@ -129,30 +123,36 @@ X_imputed = pd.DataFrame(X_imputed, columns = X_outliers_removed.columns)
 print('finished.\n')
 
 # -------------------
-# Resampling to make them uniform
+# Resampling to make class frequency uniform
 # -------------------
+
+# printing label frequency summary
+label_frequency = y.value_counts(dropna=False).reset_index()
+print("Frequency of labels:")
+print(label_frequency)
 
 data = pd.concat([data['Unnamed: 0'], X_imputed, data['type']], axis=1)
 
-# Separate the dataset into different class subsets
+# separate the dataset into class subsets
 df_class_1 = data[data['type'] == 1]
 df_class_2 = data[data['type'] == 2]
 df_class_3 = data[data['type'] == 3]
 
-# Find the class with the maximum samples
+# size of biggest class
 max_size = df_class_1.shape[0]
 
-# Upsample other classes to match the max size
+# over-sample other classes to match the max size
 df_class_2_oversampled = resample(df_class_2, replace=True, n_samples=max_size, random_state=seed)
 df_class_3_oversampled = resample(df_class_3, replace=True, n_samples=max_size, random_state=seed)
+print(f"\nWe oversampled minority classes to match size of class 1 ({max_size})")
 
-# Combine the oversampled datasets
+# combine the oversampled datasets
 oversampled_data = pd.concat([df_class_1, df_class_2_oversampled, df_class_3_oversampled])
 
-# Shuffle the dataset to prevent the model from learning patterns based on the order of the rows
+# shuffle the dataset
 oversampled_data = oversampled_data.sample(frac=1, random_state=seed).reset_index(drop=True)
 data = oversampled_data
 
 filepath = 'data/4_preprocessed.csv'
 data.to_csv(filepath, index=False)
-print(f'Pre-processed data saved in {filepath}')
+print(f'\nPre-processed data saved in {filepath}')
