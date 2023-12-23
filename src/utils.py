@@ -1,5 +1,5 @@
 """
-Module containing functions necessary for the solving script
+Module containing all additional functions used in the solve_* scripts
 """
 
 import pandas as pd
@@ -11,12 +11,25 @@ def random_forest_imputation(X, rf_params):
     """
     Random Forest Imputer
 
-    This function takes as input a dataset X containing missing values
-    then imputes them using random forest regression. When training to
-    predict a given feature, the missing values in the other features 
-    are temporarily imputed using the median value of that feature. 
-    Returns the imputed dataset. 
+    This function imputes missing values (NaN values) in dataset 'X' using 
+    a random forest regression model. For each feature with missing values,
+    we train a model using the feature as the target variable and all other
+    features as the predictors. Any missing values in the other predictor 
+    features are temporarily filled using their respective median values.
+    This was chosen since medians are less sensitive to outliers than means. 
+    We then use this model to predict the missing values of the target feature
+    and move onto the next feature with missing values. 
+    
+    Parameters
+    -----------
+    X (pd.DataFrame): The dataset with missing values to be imputed.
+    rf_params (dict): Parameters to be passed to the RandomForestRegressor model.
+
+    Returns
+    -----------
+    pd.DataFrame: The dataset with missing values imputed
     """
+
     X_imputed = X.copy()
     for col in X.columns:
         if X_imputed[col].isna().sum() > 0:
@@ -48,7 +61,6 @@ def parse_classification_report(report):
     by sklearn.metrics.classification_report and parses the content
     into a dataframe. 
     """
-
     lines = report.split('\n')[2:-4]  # exclude the last line (accuracy)
     data = [line.split() for line in lines if line]
     headers = ["Class", "Precision", "Recall", "F1-Score", "Support"]
@@ -64,7 +76,7 @@ def classifier_evaluation_plot(y_true, y_pred, classes, filepath=None):
     - table showing the precision, recall, f1-score and support for each
       class
     """
-
+    
     # calculate classification report, confusion matrix and accuracy
     class_report = classification_report(y_true, y_pred)
     conf_matrix = confusion_matrix(y_true, y_pred)

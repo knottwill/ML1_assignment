@@ -101,22 +101,58 @@ else:
 # Correcting extreme outlier values
 # -------------------------
 
-def find_outliers(feature):
+def find_extreme_outliers(feature):
+    """
+    Identify extreme outlier values within a given feature.
+
+    This function detects extreme outliers in a feature by calculating the z-scores, 
+    which represent the number of standard deviations a data point is from the mean. 
+    The method varies depending on the sparsity of the feature (the proportion of zero values):
+
+    1. For non-sparse features (sparsity <= 20%):
+       - An outlier is identified if its z-score (considering all values) is greater than 5.
+
+    2. For sparse features (sparsity > 20%), a value is considered an outlier if either of
+       the following conditions are satisfied:
+       a. Its z-score, calculated using all values (including zeros), is greater than 10.
+       b. It is a non-zero value and its 'secondary' z-score, calculated using only non-zero values,
+          is greater than 3. (Ie. if it deviates from the mean of the non-zero values by 5
+          standard deviations)
+
+    Parameters
+    -----------
+    feature (pd.Series): A single feature (column) from a DataFrame.
+
+    Returns
+    -----------
+    pd.Series: A boolean Series where True indicates an outlier value in the input feature.
+    """
+
+    # calculate sparsity of feature
     sparsity = (feature==0).sum() / len(feature)
+
+    # standardise feature (ie. calculate z-scores)
     feature_std = (feature - feature.mean())/feature.std()
 
+    # outlier if sparsity <= 20% and z-score > 5
     if sparsity <= 0.2:
         return np.abs(feature_std) > 5
     
-    # else
+    # calculate secondary z-score (calculated using only non-zero values)
     nonzero = feature[feature != 0]
     nonzero_std = (nonzero - nonzero.mean())/nonzero.std()
+
+    # outlier if sparsity > 20% and z-score > 10 or
+    # secondary z-score > 5
     return (np.abs(feature_std) > 10) | (np.abs(nonzero_std) > 5)
 
-outlier_vals = X.apply(find_outliers)
+# find (extreme) outlier values
+outlier_vals = X.apply(find_extreme_outliers)
 
+# set outlier values to NaN
 X_outliers_removed = X[outlier_vals == False]
 
+# impute outliers using random forest
 print(f'Beginning imputation of {(outlier_vals).sum().sum()} outlier values...')
 X_imputed = random_forest_imputation(X_outliers_removed, {'random_state': seed})
 X_imputed = pd.DataFrame(X_imputed, columns = X_outliers_removed.columns)

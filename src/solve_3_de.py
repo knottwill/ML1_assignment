@@ -83,15 +83,54 @@ print(f'\nZ score vs sparsity plot saved in {filepath}')
 # ----------------------
 
 def find_outliers(feature):
+    """
+    Identify outlier values within a given feature.
+
+    This function detects outliers in a feature by calculating the z-scores, which represent
+    the number of standard deviations a data point is from the mean. The method varies 
+    depending on the sparsity of the feature (i.e., the proportion of zero values):
+
+    1. For non-sparse features (sparsity <= 20%):
+       - An outlier is identified if its z-score (considering all values) is greater than 3.
+
+    2. For sparse features (sparsity > 20%), a value is considered an outlier if either of
+       the following conditions are satisfied:
+       a. Its z-score, calculated using all values (including zeros), is greater than 7.
+       b. It is a non-zero value and its 'secondary' z-score, calculated using only non-zero values,
+          is greater than 3. (Ie. if it deviates from the mean of the non-zero values by 3
+          standard deviations)
+
+    The reasoning behind this method is that non-zero values in sparse features have 
+    their z-scores inflated by all the zero values, but should not necessarily be considered 
+    outliers. They should only be considered outliers when they are outliers with respect to 
+    the non-zero distribution or they have an extreme outliers with respect to the whole feature
+    (eg. if there is just one non-zero value in the feature - clearly that value would be an
+    outlier)
+
+    Parameters
+    -----------
+    feature (pd.Series): A single feature (column) from a DataFrame.
+
+    Returns
+    -----------
+    pd.Series: A boolean Series where True indicates an outlier value in the input feature.
+    """
+    # calculate sparsity of feature
     sparsity = (feature==0).sum() / len(feature)
+
+    # standardise feature (ie. calculate z-scores)
     feature_std = (feature - feature.mean())/feature.std()
 
+    # outlier if sparsity <= 20% and z-score > 3
     if sparsity <= 0.2:
         return np.abs(feature_std) > 3
     
-    # else
+    # calculate secondary z-score (calculated using only non-zero values)
     nonzero = feature[feature != 0]
     nonzero_std = (nonzero - nonzero.mean())/nonzero.std()
+
+    # outlier if sparsity > 20% and z-score > 7 or
+    # secondary z-score > 3
     return (np.abs(feature_std) > 7) | (np.abs(nonzero_std) > 3)
 
 # find outlier values
