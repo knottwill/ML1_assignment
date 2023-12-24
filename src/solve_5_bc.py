@@ -93,14 +93,14 @@ fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
 
 # Plot the confusion matrix for KMeans
 ConfusionMatrixDisplay(conf_matrix_km, display_labels=best_log_reg.classes_).plot(ax=axes[0])
-axes[0].set_xlabel('Predicted KMeans labels')
-axes[0].set_ylabel('True KMeans labels')
+axes[0].set_xlabel('Predicted KMeans labels', fontsize=14)
+axes[0].set_ylabel('True KMeans labels', fontsize=14)
 axes[0].text(-0.1, 1.1, '(a)', transform=axes[0].transAxes, fontsize=16, fontweight='bold')
 
 # Plot the confusion matrix for Spectral Clustering
 ConfusionMatrixDisplay(conf_matrix_sp, display_labels=best_rf.classes_).plot(ax=axes[1])
-axes[1].set_xlabel('Predicted Spectral labels')
-axes[1].set_ylabel('True Spectral labels')
+axes[1].set_xlabel('Predicted Spectral labels', fontsize=14)
+axes[1].set_ylabel('True Spectral labels', fontsize=14)
 axes[1].text(-0.1, 1.1, '(b)', transform=axes[1].transAxes, fontsize=16, fontweight='bold')
 
 # Adjust layout
@@ -178,14 +178,14 @@ fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
 
 # contingency table for KMeans
 ConfusionMatrixDisplay(contingency_km, display_labels=best_log_reg.classes_).plot(ax=axes[0], cmap="YlGn")
-axes[0].set_xlabel('KMeans on important features')
-axes[0].set_ylabel('KMeans on full dataset')
+axes[0].set_xlabel('KMeans on important features', fontsize=14)
+axes[0].set_ylabel('KMeans on full dataset', fontsize=14)
 axes[0].text(-0.1, 1.1, '(a)', transform=axes[0].transAxes, fontsize=16, fontweight='bold')
 
 # contingency table for Spectral Clustering
 ConfusionMatrixDisplay(contingency_sp, display_labels=best_rf.classes_).plot(ax=axes[1], cmap="YlGn")
-axes[1].set_xlabel('Spectral clustering on important features')
-axes[1].set_ylabel('Spectral clustering on full dataset')
+axes[1].set_xlabel('Spectral clustering on important features', fontsize=14)
+axes[1].set_ylabel('Spectral clustering on full dataset', fontsize=14)
 axes[1].text(-0.1, 1.1, '(b)', transform=axes[1].transAxes, fontsize=16, fontweight='bold')
 
 plt.subplots_adjust(wspace=10)
@@ -236,8 +236,8 @@ cbar_3.set_label('Second Most Discriminant Feature', fontsize=10)
 
 for i, label in enumerate(['(i)', '(ii)', '(iii)']):
     axes[i].grid(True)
-    axes[i].set_xlabel('Principal Component 1')
-    axes[i].set_ylabel('Principal Component 2')
+    axes[i].set_xlabel('Principal Component 1', fontsize=14)
+    axes[i].set_ylabel('Principal Component 2', fontsize=14)
     axes[i].text(-2, 2, label, fontsize=16, fontweight='bold')
 
 filepath = 'plots/5c.png'

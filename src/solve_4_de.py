@@ -81,7 +81,8 @@ print(importances.set_index('Feature').head(4))
 # plotting histogram of feature importances
 fig, ax = plt.subplots(figsize=(6,6))
 sns.histplot(importances['Importance'], ax=ax)
-ax.set_xlabel('Feature Importance')
+ax.set_xlabel('Feature Importance', fontsize=12)
+ax.set_ylabel('Count', fontsize=12)
 
 filepath = 'plots/4e_importance_hist.png'
 fig.savefig(filepath)

@@ -88,8 +88,8 @@ sns.scatterplot(
     palette='viridis',
     ax=ax
 )
-ax.set_xlabel('Principal Component 1')
-ax.set_ylabel('Principal Component 2')
+ax.set_xlabel('Principal Component 1', fontsize=12)
+ax.set_ylabel('Principal Component 2', fontsize=12)
 ax.grid(True)
 
 filepath = 'plots/1e_PCA.png'

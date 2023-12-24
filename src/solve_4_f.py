@@ -73,7 +73,8 @@ print(f'\nOnly {len(nonzero_importances)} features out of {len(X.columns)} have 
 fig, ax = plt.subplots(figsize=(6,6))
 sns.histplot(nonzero_importances['Importance'], bins=70, ax=ax)
 ax.set_yticks([2*i for i in range(10)])
-ax.set_xlabel('Feature Importance')
+ax.set_xlabel('Feature Importance', fontsize=12)
+ax.set_ylabel('Count', fontsize=12)
 
 filepath = 'plots/4f_importance_hist.png'
 fig.savefig(filepath)

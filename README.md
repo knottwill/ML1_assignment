@@ -22,11 +22,11 @@ Alternatively, clone the conda environment in `environment.yml`.
 
 ### Usage
 
-The data required for the project is saved in `data/`.
+The data required for the project is saved in `data/` (including processed data which is created by running the scripts).
 
-The solution to each question is in a script titled `solve_[question-number]_[parts].py`. For example, running `solve_3_abc.py` will yield the solutions to question 3 part a, b and c. Plots will be saved in the `plots/` directory and any additional processed data will be saved in `data/`. Other results will be printed to the terminal.
+The solutions to the questions are found by running scripts titled `solve_[question-number]_[parts].py`. For example, running `solve_3_abc.py` will yield the solutions to question 3 part a, b and c. Plots will be saved in the `plots/` directory and any additional processed data will be saved in `data/`. Other results will be printed to the terminal.
 
-Below are the commands to generate all the results in the project. THE SCRIPTS MUST BE RUN IN THE ORDER GIVEN (certain scripts depend on pre-processed data from earlier scripts).
+Below are the commands to generate all the results in the project. The scripts should be run in the order given below, since certain scripts depend on pre-processed data from earlier scripts (although these datasets were included in the repository just in case).
 
 ```bash
 $ python src/solve_1_a.py    
@@ -42,6 +42,8 @@ $ python src/solve_4_f.py
 $ python src/solve_5_a.py    # 2m  
 $ python src/solve_5_bc.py   # 15s   
 ```
+
+The module `src/utils.py` contains extra functionality which is re-used in various scripts.  
 
 ### Machine Specifications and Timing
 

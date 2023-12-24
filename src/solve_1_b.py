@@ -27,8 +27,8 @@ pca_df = pd.DataFrame(data = principal_components, columns = ['Principal Compone
 fig, ax = plt.subplots(figsize=(10, 8))
 sns.scatterplot(x='Principal Component 1', y='Principal Component 2', data=pca_df, marker='x', color='green', ax=ax)
 ax.grid(True)
-ax.set_xlabel('Principal Component 1')
-ax.set_ylabel('Principal Component 2')
+ax.set_xlabel('Principal Component 1', fontsize=12)
+ax.set_ylabel('Principal Component 2', fontsize=12)
 
 filepath = 'plots/1b_PCA.png'
 fig.savefig(filepath)

@@ -69,8 +69,8 @@ ax.scatter(x=sparsity_values, y=z_scores, color='black', alpha=1, s=5)
 sns.histplot(x=sparsity_values, y=z_scores, bins=50, stat='density', cbar=True, thresh=0.07, cmap='viridis', ax=ax)
 ax.axhline(0, color='red', linestyle='--', linewidth=1) # line at origin
 ax.set_yticks(np.arange(-7, 20, 2))
-ax.set_xlabel('Sparsity')
-ax.set_ylabel('Z-score')
+ax.set_xlabel('Sparsity', fontsize=12)
+ax.set_ylabel('Z-score', fontsize=12)
 ax.grid(True, which='both', linestyle='--', linewidth=0.5)
 plt.tight_layout()
 
@@ -198,7 +198,7 @@ for i, feature in enumerate(features_to_compare):
     # original distribution with outliers removed (overlaid to highlight outliers)
     sns.histplot(X_outliers_removed[feature], bins=bins, color="blue", ax=axes[0, i], alpha=0.5)
 
-    axes[0, i].set_title(f'Original Distribution of {feature}')
+    axes[0, i].set_title(f'Original Distribution of {feature}', fontsize=12)
     axes[0, i].legend()
     axes[0, i].set_xlabel('value')
 
@@ -208,7 +208,7 @@ for i, feature in enumerate(features_to_compare):
     # original distribution with outliers removed (overlaid to highlight imputations)
     sns.histplot(X_outliers_removed[feature], bins=bins, color="green", ax=axes[1, i], alpha=1)
 
-    axes[1, i].set_title(f'Imputed Distribution of {feature}')
+    axes[1, i].set_title(f'Imputed Distribution of {feature}', fontsize=12)
     axes[1, i].legend()
     axes[1, i].set_xlabel('value')
 

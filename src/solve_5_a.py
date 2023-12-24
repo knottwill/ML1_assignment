@@ -122,15 +122,15 @@ fig, axes = plt.subplots(2, 1, figsize=(10, 12))
 
 # elbow Plot
 axes[0].plot(K_range, inertia, marker='o')
-axes[0].set_xlabel('Number of clusters', fontsize=12)
-axes[0].set_ylabel('Inertia', fontsize=12)
+axes[0].set_xlabel('Number of clusters', fontsize=14)
+axes[0].set_ylabel('Inertia', fontsize=14)
 axes[0].grid(True)
 axes[0].text(2.3, max(inertia) * 0.99, "(a)", fontsize=30, color='black') # text label
 
 # silhouette scores Plot
 axes[1].plot(range(2, 11), silhouette_scores, marker='o')
-axes[1].set_xlabel('Number of clusters', fontsize=12)
-axes[1].set_ylabel('Silhouette Score', fontsize=12)
+axes[1].set_xlabel('Number of clusters', fontsize=14)
+axes[1].set_ylabel('Silhouette Score', fontsize=14)
 axes[1].grid(True)
 axes[1].text(3.2, max(silhouette_scores) * 0.85, "(b)", fontsize=30, color='black') # text label 
 
@@ -162,8 +162,8 @@ spectral_labels = spectral.fit_predict(X)
 # contingency matrix
 conf_matrix = confusion_matrix(kmeans_labels, spectral_labels)
 ConfusionMatrixDisplay(conf_matrix).plot(cmap="Blues")
-plt.ylabel("KMeans Cluster Labels")
-plt.xlabel("Spectral Cluster Labels")
+plt.ylabel("KMeans Cluster Labels", fontsize=14)
+plt.xlabel("Spectral Cluster Labels", fontsize=14)
 
 # save contingency table
 filepath = 'plots/kmeans_spectral.png'
