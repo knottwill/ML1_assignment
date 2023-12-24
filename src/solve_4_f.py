@@ -21,10 +21,8 @@ seed = 0
 # Normalise features
 # -----------------
 
-# Create a MinMaxScaler object
+# normalise the features
 norm = MinMaxScaler()
-
-# Fit and transform the data
 X_norm = norm.fit_transform(X)
 
 # Convert back to DataFrame
@@ -36,16 +34,16 @@ X = X_norm
 # Train classifier
 # -------------------
 
-# Split the data into training and testing sets
+# Split the data into stratified training and testing sets
 X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=seed, stratify=y)
 
-# Create logistic regression model with Lasso (L1) regularization
+# logistic regression model with Lasso (L1) regularization
 model = LogisticRegression(penalty='l1', solver='saga', max_iter=10000, random_state=seed)
 
 # Train the model
 model.fit(X_train, y_train)
 
-# Make predictions and evaluate the model
+# evaluate the model on the test set
 y_pred = model.predict(X_test)
 filepath = 'plots/4f_default_lasso.png'
 classifier_evaluation_plot(y_test, y_pred, model.classes_, filepath)
@@ -84,13 +82,13 @@ print(f'Feature importance histogram saved in {filepath}')
 important_features = importances['Feature'][:4]
 assert (importances['Importance'][:50] > 0).all() # assert all have non-zero importances
 
-# Create logistic regression model with Lasso (L1) regularization
+# logistic regression model with Lasso (L1) regularization
 model = LogisticRegression(penalty='l1', solver='saga', max_iter=10000, random_state=seed)
 
 # Train the model
 model.fit(X_train[important_features], y_train)
 
-# Make predictions and evaluate the model
+# evaluate the model on the test set
 y_pred = model.predict(X_test[important_features])
 filepath = 'plots/4f_importance_lasso.png'
 classifier_evaluation_plot(y_test, y_pred, model.classes_, filepath)
