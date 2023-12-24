@@ -24,7 +24,7 @@ if not os.path.exists('data/'):
     os.makedirs('data/')
 
 # data = pd.read_csv('data/processed_for_lasso.csv')
-data = pd.read_csv('data/ADS_BaselineDataset.csv')
+data = pd.read_csv('data/ADS_baselineDataset.csv')
 X = data.drop(['Unnamed: 0','type'], axis=1)
 y = data['type']
 seed = 42
