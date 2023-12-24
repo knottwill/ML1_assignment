@@ -17,7 +17,7 @@ if not os.path.exists('plots/'):
 output_dir = 'plots/'
 
 # load imputed dataset
-data = pd.read_csv('data/C_Imputed.csv')
+data = pd.read_csv('data/C_imputed.csv')
 X = data.drop(columns=['Unnamed: 0', 'classification'], axis=1)
 y = data['classification']
 
