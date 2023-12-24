@@ -28,22 +28,21 @@ kmeans_labels = cluster_labels["KMeans"]
 spectral_labels = cluster_labels["Spectral"]
 
 # -----------------------
-# Predicting KMeans clusters
+# Predicting KMeans clusters (Logistic regression is best)
 # -----------------------
 
-# Splitting the data into training and test sets (80% train, 20% test)
+# split data into stratified training and test sets
 X_train, X_test, km_train, km_test = train_test_split(X, kmeans_labels, test_size=0.2, random_state=seed, stratify=kmeans_labels)
 
 log_reg = LogisticRegression(penalty='l1', solver= 'saga', max_iter=10000, random_state=seed)
 
-# Define the parameter grid for GridSearchCV
+# optimise regularization strength using cross validation on training set
 param_grid = {
-    'C': [0.01, 0.1, 1, 10],  # Regularization strengths
+    'C': [0.01, 0.1, 1, 10], 
 }
-
 grid_search = GridSearchCV(estimator=log_reg, param_grid=param_grid, cv=5, n_jobs=-1)
 
-# Train the classifier with GridSearchCV
+# train the classifier with GridSearchCV
 grid_search.fit(X_train, km_train)
 
 # Use the best estimator found by GridSearchCV
@@ -53,42 +52,38 @@ best_log_reg = grid_search.best_estimator_
 km_pred = best_log_reg.predict(X_test)
 
 # -----------------------
-# Predicting Spectral clusters
+# Predicting Spectral clusters (Random Forest is best)
 # -----------------------
 
-# Splitting the data into training and test sets (80% train, 20% test)
+# split data into stratified training and test sets (80% train, 20% test)
 X_train, X_test, sp_train, sp_test = train_test_split(X, spectral_labels, test_size=0.2, random_state=seed, stratify=spectral_labels)
 
 rf = RandomForestClassifier(random_state=seed)
 
-# Define the parameter grid for GridSearchCV
+# optimise parameters using cross validation on training set
 param_grid = {
     'n_estimators': [10, 50, 100, 200],  # Number of trees in the forest
     'max_depth': [None, 10, 20, 30],  # Maximum depth of the tree
-    # Add other parameters as needed
 }
-
-# Initialize GridSearchCV
 grid_search = GridSearchCV(estimator=rf, param_grid=param_grid, cv=5, n_jobs=-1)
 
-# Train the classifier with GridSearchCV
+# train the classifier with GridSearchCV
 grid_search.fit(X_train, sp_train)
 
-# Use the best estimator found by GridSearchCV
+# use the best estimator found
 best_rf = grid_search.best_estimator_
 
-# Predict on the test set with the best estimator
+# predict on the test set with the best estimator
 sp_pred = best_rf.predict(X_test)
 
 # ------------------
 # Confusion matrices of classifiers
 # ------------------
 
-# Confusion Matrices
+# confusion Matrices
 conf_matrix_km = confusion_matrix(km_test, km_pred)
 conf_matrix_sp = confusion_matrix(sp_test, sp_pred)
 
-# Create a figure with two subplots, side by side
 fig, axes = plt.subplots(nrows=1, ncols=2, figsize=(12, 6))
 
 # Plot the confusion matrix for KMeans
@@ -103,7 +98,7 @@ axes[1].set_xlabel('Predicted Spectral labels', fontsize=14)
 axes[1].set_ylabel('True Spectral labels', fontsize=14)
 axes[1].text(-0.1, 1.1, '(b)', transform=axes[1].transAxes, fontsize=16, fontweight='bold')
 
-# Adjust layout
+# adjust layout
 plt.subplots_adjust(wspace=10)
 plt.tight_layout()
 
