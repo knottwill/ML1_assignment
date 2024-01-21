@@ -1,6 +1,10 @@
-# M1 Coursework - William Knottenbelt
+# Applied Data Science - Coursework
 
-This repository contains all code necessary to reproduce all results discussed in `report/main.pdf`.
+This repository contains the codebase and report submitted in fulfillment of the coursework assignment detailed in `assignment.pdf`. This was one of three assignments completed in the first semester of my MPhil Data Intensive Science at the University of Cambridge. 
+
+This submission recieved a grade of ...
+
+The assigment is primarily concerned with the application of machine learning techniques to sparse, high-dimensional datasets. The techniques utilised in this submission include: k-Nearest Neighbors, Random Forest, Logistic Regression with Lasso regularisation, K-Means, Spectral Clustering, PCA and UMAP. 
 
 ### Installation
 
