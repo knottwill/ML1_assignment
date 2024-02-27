@@ -1,10 +1,10 @@
-# Applied Data Science - Coursework
+# Machine Learning 1 - Coursework Assignment
 
-This repository contains the codebase and report submitted in fulfillment of the coursework assignment detailed in `assignment.pdf`. This was one of three assignments completed in the first semester of my MPhil Data Intensive Science at the University of Cambridge. 
+This project analyses the sparse, high-dimensional datasets found in `data/` using cluster analysis, classification, regression, outlier detection, imputation and dimensionality reduction. We utilised the following techniques: k-Nearest Neighbors, Random Forest, Logistic Regression with Lasso regularisation, K-Means, Spectral Clustering, PCA and UMAP. 
 
-This submission recieved a grade of ...
+This repository (codebase and report in `report/main.pdf`) was submitted in fulfillment of the coursework assignment detailed in `assignment.pdf`. This was one of three assignments completed in the first semester of my Master's in Data Intensive Science at the University of Cambridge. 
 
-The assigment is primarily concerned with the application of machine learning techniques to sparse, high-dimensional datasets. The techniques utilised in this submission include: k-Nearest Neighbors, Random Forest, Logistic Regression with Lasso regularisation, K-Means, Spectral Clustering, PCA and UMAP. 
+My submission recieved a grade of 84% (may be subject to moderation in Final Examiners' Meeting in September 2024).
 
 ### Installation
 
